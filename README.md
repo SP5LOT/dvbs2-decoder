@@ -7,6 +7,11 @@ which combines the reception of many ground stations. It works with an **RTL-SDR
 The download also contains **MX Uploader**: it sends the stream of *other* DVB-S2 decoders
 (MiniTioune, SDRangel, SatDump and others) to the same MX merger.
 
+Inside the receiver, the DVB-S2 demodulator is **leandvb** from [leansdr](https://github.com/pabr/leansdr) by pabr,
+and the LDPC decoder is `ldpc_tool` by Ahmet Inan (adapted by pabr), both with our patches. This project adds the Windows receiver
+window, SDR control, SSDV photos and the MX upload. It is an unofficial program, not affiliated with the leansdr
+author: please report problems here, not upstream.
+
 ![Receiver window](docs/images/receiver.png)
 
 ## Download
@@ -15,11 +20,11 @@ Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: e
 
 **You need**
 
-- Windows 10 or 11, 64-bit.
+- Windows 10, 64-bit (tested on three PCs). Windows 11 should work but has not been tested.
 - An RTL-SDR dongle or a HackRF One with the **WinUSB** driver. Install it once with
   [Zadig](https://zadig.akeo.ie): pick the device, choose *WinUSB*, click *Install Driver*.
 - Optional: [VLC media player](https://www.videolan.org/vlc/) 64-bit in its default folder.
-  The video preview uses it; without VLC the preview uses ffmpeg, which needs more CPU.
+  The video preview uses it; without VLC the preview uses ffmpeg instead.
 
 **Install**
 
@@ -55,7 +60,7 @@ flowchart LR
 | **5** | **Spectrum** | The transmitter is the hump in the middle. *Level* moves the scale. |
 | **6** | **Video** | Live video. Double-click for full screen. |
 | **7** | **Received image (SSDV)** | The photo being received now and the list of photos received since the start. Double-click a thumbnail to open it. |
-| **8** | **Status** | **LOCK**: *FRAME* (green) means data is decoded, *CARRIER* means the signal is found but not decoded yet. **MER**: signal quality in dB, more is better (QPSK 3/4 needs about 4 dB). **SS**: signal strength. **FREQ**: carrier offset. **VBER**: bit errors, 0 is clean. |
+| **8** | **Status** | **LOCK**: *FRAME* (green) means data is decoded, *CARRIER* means the signal is found but not decoded yet. **MER**: signal quality in dB, more is better (for QPSK 3/4 the DVB-S2 standard gives about 4 dB). **SS**: signal strength. **FREQ**: carrier offset. **VBER**: bit errors, 0 is clean. |
 
 **Modcod mode.** A balloon transmits one MODCOD for the whole flight, so the receiver decodes only the
 selected one (*Lock*). If the transmitter uses another MODCOD, *Follow TX changes* switches the receiver
@@ -66,7 +71,7 @@ MODCOD at once, for transmitters that change it often.
 
 1. Plug in the SDR and start `leandvb_gui.exe`.
 2. **1**: choose the SDR and type the frequency of the balloon.
-3. **2**: check the symbol rate (ask the balloon team; 500000 and 250000 are common).
+3. **2**: check the symbol rate (ask the balloon team, for example 500000 or 250000).
 4. Press **START**. After a few seconds LOCK shows *FRAME*, the video appears and photos start to arrive.
 
 ## Outputs
@@ -105,7 +110,7 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 ## Known limitations in 1.0.0
 
 - Frequency and symbol rate are not remembered: every start begins with 437.000 MHz and 500000 symbols/s.
-- The bundled RTL-SDR library does not recognise the **RTL-SDR Blog V4**.
+- The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
 - Folder names with characters outside the Windows system code page may not work.
 
@@ -118,7 +123,7 @@ For a bug, the version (top right of the window) and the end of `gui_log.txt` he
 
 - **Source code:** every release has a second file, `SP5LOT-dvbs2-decoder-<version>-source.zip`, with the full
   source of both programs, our patches to the engine and `BUILDING.md` (how to build it with MSYS2).
-- The DVB-S2 engine is [leansdr](https://github.com/pabr/leansdr) by Pascal Bruno with our patches.
+- The DVB-S2 engine is [leansdr](https://github.com/pabr/leansdr) by pabr (www.pabr.org) with our patches.
 - SSDV photos travel inside the same DVB-S2 transport stream as SSDV packets on **PID 0x00C8** (SkyEdge format).
 - The address of the SkyEdge MX merger is not in the source code; a build from source can use your own merger (see `BUILDING.md`).
 
