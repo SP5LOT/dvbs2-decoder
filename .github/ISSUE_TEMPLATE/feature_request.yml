@@ -1,0 +1,19 @@
+name: Idea or request
+description: Suggest an improvement or a new feature
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: program
+    attributes:
+      label: Program
+      options:
+        - Receiver (leandvb_gui.exe)
+        - MX Uploader (mx_uploader.exe)
+        - Documentation
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: What should change, and how would it help you (for example during a balloon flight)?
+    validations:
+      required: true

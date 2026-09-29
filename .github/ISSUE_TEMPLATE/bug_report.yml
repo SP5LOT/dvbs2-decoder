@@ -1,0 +1,55 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting. A few details help a lot.
+        **Never paste your MX key** (it is in the settings file, not in the logs).
+  - type: dropdown
+    id: program
+    attributes:
+      label: Program
+      options:
+        - Receiver (leandvb_gui.exe)
+        - MX Uploader (mx_uploader.exe)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Shown at the top of the window, for example "v1.0.0"; the log shows the build number.
+      placeholder: 1.0.0 build 40
+    validations:
+      required: true
+  - type: dropdown
+    id: sdr
+    attributes:
+      label: SDR
+      options:
+        - RTL-SDR
+        - HackRF One
+        - other or not relevant
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 10 22H2
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      description: Steps to repeat it, if you know them. Screenshots are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: |
+        Receiver: the last 50 lines of %TEMP%\leandvb_gui\gui_log.txt (paste %TEMP%\leandvb_gui into the Explorer address bar).
+        MX Uploader: the newest file in %TEMP%\mx_uploader\.
+        Logs contain your callsign and folder names (with your Windows user name), never your key.
+      render: text

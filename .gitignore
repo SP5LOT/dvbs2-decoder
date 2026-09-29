@@ -1,0 +1,19 @@
+# build output
+receiver/out/
+uploader/out/
+engine/out/
+*.o
+*.exe
+*.dll
+
+# settings files contain the station callsign and key: never commit them
+*.ini
+*.ini.*
+imgui.ini
+
+# local data
+*.ts
+*.u8
+*.cs8
+*.cf32
+*.zip
