@@ -1,4 +1,4 @@
-# SP5LOT DVB-S2 decoder (SkyEdge)
+# SP5LOT DVB-S2 decoder and MX Uploader (SkyEdge)
 
 A Windows receiver for **DVB-S2 video from high-altitude balloons**. It shows the live video,
 saves the **SSDV photos** sent by the balloon and can forward the stream to the **SkyEdge MX merger**,
