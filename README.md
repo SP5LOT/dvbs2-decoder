@@ -4,8 +4,8 @@ A Windows receiver for **DVB-S2 video from high-altitude balloons**. It shows th
 saves the **SSDV photos** sent by the balloon and can forward the stream to the **SkyEdge MX merger**,
 which combines the reception of many ground stations. It works with an **RTL-SDR** dongle or a **HackRF One**.
 
-The download also contains **MX Uploader**: it sends the stream of *other* DVB-S2 decoders
-(MiniTioune, SDRangel, SatDump and others) to the same MX merger.
+The download also contains **[MX Uploader](#mx-uploader)**: it sends the stream of *other* DVB-S2 decoders
+(MiniTioune, SDRangel, SatDump and others) to the same MX merger. It is also available as its own small ZIP.
 
 Inside the receiver, the DVB-S2 demodulator is **leandvb** from [leansdr](https://github.com/pabr/leansdr) by pabr,
 and the LDPC decoder is `ldpc_tool` by Ahmet Inan (adapted by pabr), both with our patches. This project adds the Windows receiver
@@ -17,6 +17,12 @@ author: please report problems here, not upstream.
 ## Download
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
+
+| File in the release | For whom |
+|---|---|
+| `SP5LOT-dvbs2-decoder-<version>-win64.zip` | the receiver with RTL-SDR or HackRF, plus MX Uploader (all in one) |
+| `SP5LOT-mx-uploader-<version>-win64.zip` | only MX Uploader, for stations that receive with another decoder (under 1 MB) |
+| `SP5LOT-dvbs2-decoder-<version>-source.zip` | source code, for developers |
 
 **You need**
 
@@ -87,13 +93,18 @@ MODCOD at once, for transmitters that change it often.
 
 ## MX Uploader
 
-For stations that already use another DVB-S2 decoder:
+For stations that already receive with another DVB-S2 decoder (MiniTioune, SDRangel, SatDump or any decoder
+that can send the transport stream over UDP): MX Uploader takes that stream and sends it to the SkyEdge MX merger.
+One small program, no installation: `mx_uploader.exe` is in the main ZIP and in its own small ZIP.
 
-1. Start `mx_uploader.exe`, enter the callsign and key and tick *Upload to MX server*.
-2. In your decoder, send the transport stream over UDP to `127.0.0.1:8888`. If the decoder runs on another
-   computer, send it to this computer's IP address: *Listen on all interfaces* is ticked by default, so Windows
-   may ask about the firewall on the first start.
-3. Optional: *Copy stream to a player* sends the same stream to `127.0.0.1:1235` (VLC: `udp://@:1235`).
+![MX Uploader window](docs/images/uploader.png)
+
+| | What it is | What to do |
+|---|---|---|
+| **1** | **MX server (merger)** | Enter the callsign and key given by the merger admin and tick *Upload to MX server*. The line below shows the state: *ONLINE, station accepted* means it works. |
+| **2** | **Input** | In your decoder, send the TS over UDP to this port (default `8888`, so `127.0.0.1:8888` on the same computer). *Listen on all interfaces* (ticked by default) lets a decoder on another computer send here; Windows may ask about the firewall on the first start. Multicast group is optional. |
+| **3** | **Copy stream to a player** | Sends the same stream to `127.0.0.1:1235`, for example to VLC (`udp://@:1235`). |
+| **4** | **Counters** | Packets sent to the server, accepted by the server and missing at the server. The server reports its counters about every 5 s. |
 
 Several receivers at once: one copy per receiver, each with its own settings file and input port, for example
 `mx_uploader.exe --config station2.ini`.
