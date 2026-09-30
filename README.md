@@ -22,6 +22,7 @@ Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: e
 |---|---|
 | `SP5LOT-dvbs2-decoder-<version>-win64.zip` | the receiver with RTL-SDR or HackRF, plus MX Uploader (all in one) |
 | `SP5LOT-mx-uploader-<version>-win64.zip` | only MX Uploader, for stations that receive with another decoder (under 1 MB) |
+| `SP5LOT-dvbs2-sample-iq.zip` | a 19.5 s sample recording to try [decoding a recorded IQ file](#decoding-a-recorded-iq-file) |
 | `SP5LOT-dvbs2-decoder-<version>-source.zip` | source code, for developers |
 
 **You need**
@@ -47,6 +48,7 @@ Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: e
 flowchart LR
     TX["Balloon<br/>DVB-S2 transmitter"] -- radio --> SDR["RTL-SDR<br/>or HackRF"]
     SDR --> RX["leandvb_gui.exe<br/>receiver"]
+    F["IQ recording<br/>(SatDump, rtl_sdr, HackRF)"] -.->|IQ file| RX
     RX --> V["video in the window"]
     RX --> P["SSDV photos"]
     RX --> R["TS recording / VLC"]
@@ -59,7 +61,7 @@ flowchart LR
 
 | | What it is | What to do |
 |---|---|---|
-| **1** | **Source / SDR** | Choose RTL-SDR or HackRF, type the frequency in MHz (default 437.000), set the gain. |
+| **1** | **Source / SDR** | Choose RTL-SDR or HackRF, type the frequency in MHz (default 437.000), set the gain. Or choose *IQ file* to decode a recording. |
 | **2** | **Signal** | DVB-S2, the MODCOD of the transmitter (default QPSK 3/4), symbol rate (default 500000). *Lock (weak)* with *Follow TX changes* is the default, see below. |
 | **3** | **Output** | What to do with the stream, in any combination: preview, VLC, TS recording, SSDV photos, upload to MX. |
 | **4** | **Constellation** | Four clean dots = a good QPSK signal. A round cloud = too weak. |
@@ -91,6 +93,28 @@ MODCOD at once, for transmitters that change it often.
 - **Upload to MX server (tsmerge)**: tick it and enter your station **callsign** and **key**. Both are empty after
   installation; the operator of the MX merger gives them to you. The status line shows when the server has accepted your station.
 
+## Decoding a recorded IQ file
+
+New in 1.0.1: the receiver can decode a recording instead of a live SDR, for example a file saved by
+SatDump, rtl_sdr or a HackRF.
+
+1. **1** *Source / SDR*, *Type*: choose **IQ file** and pick the file with the **...** button.
+   The format and the sample rate are read from the file name, for example
+   `2025-05-10_15-16-13_1536000SPS_437200000Hz.cs8` (SatDump): `.cs8`/`.s8`, `.u8`/`.cu8` (rtl_sdr),
+   `.cs16`/`.s16`, `.cf32`/`.f32`, and `1536000SPS` or `2048ksps` for the sample rate.
+   The line *detected:* shows the result.
+2. **2** *Signal*: the symbol rate as transmitted (for example 500000). The transmitter should be near
+   the centre of the recording.
+3. Press **START**. With the preview on, the file plays at its real speed; *Loop* repeats it.
+   No lock? Try *Swap I/Q* in the *Advanced* section (some recordings have the spectrum mirrored).
+
+When decoding a file, the MODCOD is always detected automatically (*AUTO*) and **nothing is sent to
+the MX merger**, even with *Upload to MX server* ticked.
+
+**Sample recording:** `SP5LOT-dvbs2-sample-iq.zip` on the release page: 19.5 s of a real signal from the
+SkyEdge transmitter (QPSK 3/4, 500000 symbols/s, recorded with an RTL-SDR at 2.048 MS/s). Choose it as the
+IQ file and press START: LOCK shows *FRAME* and the video shows clouds seen from a balloon.
+
 ## MX Uploader
 
 For stations that already receive with another DVB-S2 decoder (MiniTioune, SDRangel, SatDump or any decoder
@@ -118,7 +142,7 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.0
+## Known limitations in 1.0.1
 
 - Frequency and symbol rate are not remembered: every start begins with 437.000 MHz and 500000 symbols/s.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
