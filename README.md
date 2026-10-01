@@ -18,6 +18,8 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.0.1 could show FRAMELOCK and a good MER and still produce no video until the signal faded away; 1.0.2 recovers from this by itself and decodes noticeably more from weak flight recordings. With a good signal nothing changes, and the window is the same as in 1.0.1.
+
 | File in the release | For whom |
 |---|---|
 | `SP5LOT-dvbs2-decoder-<version>-win64.zip` | the receiver with RTL-SDR or HackRF, plus MX Uploader (all in one) |
@@ -142,8 +144,9 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.1
+## Known limitations in 1.0.2
 
+- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses QPSK 3/4 and is not affected.
 - Frequency and symbol rate are not remembered: every start begins with 437.000 MHz and 500000 symbols/s.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
