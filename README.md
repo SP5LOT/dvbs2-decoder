@@ -1,11 +1,12 @@
 # SP5LOT DVB-S2 decoder and MX Uploader (SkyEdge)
 
-A Windows receiver for **DVB-S2 video from high-altitude balloons**. It shows the live video,
-saves the **SSDV photos** sent by the balloon and can forward the stream to the **SkyEdge MX merger**,
+A Windows receiver and decoder for **DVB-S2** transmissions. It shows the live video,
+saves the **SSDV photos** sent by the transmitter and can forward the stream to the **SkyEdge MX merger**,
 which combines the reception of many ground stations. It works with an **RTL-SDR** dongle or a **HackRF One**.
+One of its uses is video from **high-altitude balloons**.
 
-The download also contains **[MX Uploader](#mx-uploader)**: it sends the stream of *other* DVB-S2 decoders
-(MiniTioune, SDRangel, SatDump and others) to the same MX merger. It is also available as its own small ZIP.
+**[MX Uploader](#mx-uploader)** is a separate program in the same release, with its own small ZIP: it sends the
+stream of *other* DVB-S2 decoders (MiniTioune, SDRangel, SatDump and others) to the same MX merger.
 
 Inside the receiver, the DVB-S2 demodulator is **leandvb** from [leansdr](https://github.com/pabr/leansdr) by pabr,
 and the LDPC decoder is `ldpc_tool` by Ahmet Inan (adapted by pabr), both with our patches. This project adds the Windows receiver
@@ -22,10 +23,11 @@ New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.
 
 | File in the release | For whom |
 |---|---|
-| `SP5LOT-dvbs2-decoder-<version>-win64.zip` | the receiver with RTL-SDR or HackRF, plus MX Uploader (all in one) |
-| `SP5LOT-mx-uploader-<version>-win64.zip` | only MX Uploader, for stations that receive with another decoder (under 1 MB) |
+| `SP5LOT-dvbs2-decoder-<version>-win64.zip` | the receiver with RTL-SDR or HackRF |
+| `SP5LOT-mx-uploader-<version>-win64.zip` | MX Uploader, a separate program for stations that receive with another decoder (under 1 MB) |
 | `SP5LOT-dvbs2-sample-iq.zip` | a 19.5 s sample recording to try [decoding a recorded IQ file](#decoding-a-recorded-iq-file) |
-| `SP5LOT-dvbs2-decoder-<version>-source.zip` | source code, for developers |
+| `SP5LOT-dvbs2-decoder-<version>-source.zip` | source code of the receiver, for developers |
+| `SP5LOT-mx-uploader-<version>-source.zip` | source code of MX Uploader, for developers (from 1.0.2) |
 
 **You need**
 
@@ -39,7 +41,7 @@ New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.
 
 1. Extract **all** files from the ZIP into one folder where you can write, for example on the Desktop.
    Not into `C:\Program Files`: the programs save their settings next to the exe.
-2. Run `leandvb_gui.exe` (the receiver) or `mx_uploader.exe` (the uploader).
+2. Run `leandvb_gui.exe` (the receiver), or `mx_uploader.exe` from the MX Uploader ZIP.
 3. The programs are not signed, so Windows may show *"Windows protected your PC"*:
    click *More info*, then *Run anyway*.
 4. On a slow PC the very first start can take up to half a minute (VLC builds its plugin list). Later starts are fast.
@@ -48,7 +50,7 @@ New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.
 
 ```mermaid
 flowchart LR
-    TX["Balloon<br/>DVB-S2 transmitter"] -- radio --> SDR["RTL-SDR<br/>or HackRF"]
+    TX["DVB-S2 transmitter<br/>(for example a balloon)"] -- radio --> SDR["RTL-SDR<br/>or HackRF"]
     SDR --> RX["leandvb_gui.exe<br/>receiver"]
     F["IQ recording<br/>(SatDump, rtl_sdr, HackRF)"] -.->|IQ file| RX
     RX --> V["video in the window"]
@@ -72,7 +74,7 @@ flowchart LR
 | **7** | **Received image (SSDV)** | The photo being received now and the list of photos received since the start. Double-click a thumbnail to open it. |
 | **8** | **Status** | **LOCK**: *FRAME* (green) means data is decoded, *CARRIER* means the signal is found but not decoded yet. **MER**: signal quality in dB, more is better (for QPSK 3/4 the DVB-S2 standard gives about 4 dB). **SS**: signal strength. **FREQ**: carrier offset. **VBER**: bit errors, 0 is clean. |
 
-**Modcod mode.** A balloon transmits one MODCOD for the whole flight, so the receiver decodes only the
+**Modcod mode.** A transmitter usually keeps one MODCOD (a balloon for the whole flight), so the receiver decodes only the
 selected one (*Lock*). If the transmitter uses another MODCOD, *Follow TX changes* switches the receiver
 to it by itself within a few seconds (short restart), and the choice is remembered. *AUTO* accepts every
 MODCOD at once, for transmitters that change it often.
@@ -80,8 +82,8 @@ MODCOD at once, for transmitters that change it often.
 ## Quick start
 
 1. Plug in the SDR and start `leandvb_gui.exe`.
-2. **1**: choose the SDR and type the frequency of the balloon.
-3. **2**: check the symbol rate (ask the balloon team, for example 500000 or 250000).
+2. **1**: choose the SDR and type the frequency of the transmitter.
+3. **2**: check the symbol rate (ask the operator of the transmitter, for example 500000 or 250000).
 4. Press **START**. After a few seconds LOCK shows *FRAME*, the video appears and photos start to arrive.
 
 ## Outputs
@@ -90,7 +92,7 @@ MODCOD at once, for transmitters that change it often.
 - **Stream to VLC (UDP)**: the full transport stream to an address and port, default `127.0.0.1:1234`.
   In VLC: *Media > Open Network Stream* > `udp://@:1234`. It can also go to another PC.
 - **Record TS (all PIDs)**: a new file `rec_<date>.ts` at every start, never overwritten. Folder: *Videos\SkyEdge DVB*.
-- **Receive files (SSDV)**: photos from the balloon, saved as `rx_NNNN.jpg`. Folder: *Pictures\SkyEdge DVB\SSDV*.
+- **Receive files (SSDV)**: photos sent by the transmitter, saved as `rx_NNNN.jpg`. Folder: *Pictures\SkyEdge DVB\SSDV*.
   The *...* button chooses another folder.
 - **Upload to MX server (tsmerge)**: tick it and enter your station **callsign** and **key**. Both are empty after
   installation; the operator of the MX merger gives them to you. The status line shows when the server has accepted your station.
@@ -121,7 +123,8 @@ IQ file and press START: LOCK shows *FRAME* and the video shows clouds seen from
 
 For stations that already receive with another DVB-S2 decoder (MiniTioune, SDRangel, SatDump or any decoder
 that can send the transport stream over UDP): MX Uploader takes that stream and sends it to the SkyEdge MX merger.
-One small program, no installation: `mx_uploader.exe` is in the main ZIP and in its own small ZIP.
+One small program, no installation: `mx_uploader.exe` is in its own small ZIP, `SP5LOT-mx-uploader-<version>-win64.zip`
+(up to 1.0.1 it was also inside the receiver ZIP).
 
 ![MX Uploader window](docs/images/uploader.png)
 
@@ -159,8 +162,8 @@ For a bug, the version (top right of the window) and the end of `gui_log.txt` he
 
 ## For developers
 
-- **Source code:** every release has a second file, `SP5LOT-dvbs2-decoder-<version>-source.zip`, with the full
-  source of both programs, our patches to the engine and `BUILDING.md` (how to build it with MSYS2).
+- **Source code:** `SP5LOT-dvbs2-decoder-<version>-source.zip` has the receiver, our patches to the engine and
+  `BUILDING.md` (how to build it with MSYS2); from 1.0.2 MX Uploader has its own `SP5LOT-mx-uploader-<version>-source.zip`.
 - The DVB-S2 engine is [leansdr](https://github.com/pabr/leansdr) by pabr (www.pabr.org) with our patches.
 - SSDV photos travel inside the same DVB-S2 transport stream as SSDV packets on **PID 0x00C8** (SkyEdge format).
 - The address of the SkyEdge MX merger is not in the source code; a build from source can use your own merger (see `BUILDING.md`).
