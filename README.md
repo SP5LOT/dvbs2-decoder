@@ -19,6 +19,10 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.0.4: faster decoder, more data from a weak signal. The LDPC decoder now runs inside the demodulator: with a weak signal the receiver decodes more and keeps up with the live signal better. There are two builds of the demodulator, with and without AVX2, and the receiver picks the right one for your processor. Symbol rate, roll-off, frequency and sample rate are now remembered between runs. MX Uploader has no changes and stays at 1.0.2.
+
+Also in 1.0.4 (from 1.0.3, which was not released separately): steadier HackRF reception on slower PCs. With a HackRF on a slower PC, a short moment of high CPU load could leave the 1.0.2 receiver behind the live signal for good: the video kept stuttering until the program was restarted. Now the receiver catches up with the live signal by itself and notes this in the log.
+
 New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.0.1 could show FRAMELOCK and a good MER and still produce no video until the signal faded away; 1.0.2 recovers from this by itself and decodes noticeably more from weak flight recordings. With a good signal nothing changes, and the window is the same as in 1.0.1.
 
 | File in the release | For whom |
@@ -147,10 +151,9 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.2
+## Known limitations in 1.0.4
 
-- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses QPSK 3/4 and is not affected.
-- Frequency and symbol rate are not remembered: every start begins with 437.000 MHz and 500000 symbols/s.
+- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses QPSK 3/4 and 8PSK 3/5 and is not affected.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
 - Folder names with characters outside the Windows system code page may not work.
