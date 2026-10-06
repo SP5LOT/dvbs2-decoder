@@ -19,6 +19,8 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.0.7: two bars above the panels show **MER** and **CNR** in dB (the bar is the average of the last 2 seconds, the thin line is the latest reading; CNR is shown when the sample rate is more than 4 times the symbol rate), and **Speed** and **Data** show the bit rate of the decoded transport stream and how much of it has been received since START. MER readings are steadier, plus small fixes. MX Uploader has no changes and stays at 1.0.2.
+
 New in 1.0.6: 16APSK and 32APSK with short frames now decode properly (before, only a small part of the stream was decoded), and APSK reception is tuned for common amateur DVB-S2 transmitters such as Pluto and Portsdown (for a transmitter that follows the EN 302 307 amplitude scaling exactly, set `apsk_std=1` in the `[signal]` section of `leandvb_gui_settings.ini`). If the receiver stays locked but cannot decode anything for 20 seconds, it restarts the demodulator by itself, and the log warns when the signal at the SDR input is too weak or clipped. MX Uploader has no changes and stays at 1.0.2.
 
 New in 1.0.4: faster decoder, more data from a weak signal. The LDPC decoder now runs inside the demodulator: with a weak signal the receiver decodes more and keeps up with the live signal better. There are two builds of the demodulator, with and without AVX2, and the receiver picks the right one for your processor. Symbol rate, roll-off, frequency and sample rate are now remembered between runs. MX Uploader has no changes and stays at 1.0.2.
@@ -153,7 +155,7 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.6
+## Known limitations in 1.0.7
 
 - In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses QPSK 3/4 and 8PSK 3/5 and is not affected.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
