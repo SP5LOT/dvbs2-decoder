@@ -19,6 +19,8 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.0.12: better HackRF reception and clearer status. HackRF reception quality is better (higher MER, fewer errors) when the sample rate leaves enough room; if the symbol rate is too wide for the chosen sample rate, the window says which sample rate to use. HackRF has an optional automatic gain (**Auto gain**, off by default) with a status line that shows what it is doing; it stays on when you switch the RF amp by hand. When the transmitter sends only filler (no video, no images), the window shows this instead of "waiting for video...". The constellation shows all points correctly in more situations, automatic restarts happen less often when the receiver stays locked but cannot decode for a long time, and Upload to MX server now also skips padding packets. 1.0.10 and 1.0.11 were not released separately. MX Uploader has no changes and stays at 1.0.2.
+
 New in 1.0.9: steadier reception near the decoding limit. Near the decoding threshold the receiver could stay locked without decoding anything until it was restarted; it now recovers by itself within a fraction of a second. More data is decoded from a weak signal, and the MER is higher with a strong one. When the signal is lost, the constellation fades out and shows NO SIGNAL, and the readouts show -- instead of the last value. 1.0.8 was not released separately. MX Uploader has no changes and stays at 1.0.2.
 
 New in 1.0.7: two bars above the panels show **MER** and **CNR** in dB (the bar is the average of the last 2 seconds, the thin line is the latest reading; CNR is shown when the sample rate is more than 4 times the symbol rate), and **Speed** and **Data** show the bit rate of the decoded transport stream and how much of it has been received since START. MER readings are steadier, plus small fixes. MX Uploader has no changes and stays at 1.0.2.
@@ -157,11 +159,12 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.9
+## Known limitations in 1.0.12
 
-- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses QPSK 3/4 and 8PSK 3/5 and is not affected.
+- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses higher MODCODs and is not affected.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
+- HackRF: the better reception was tested only with narrow signals (low symbol rates); with wider signals and the suggested higher sample rate it has not been tested yet.
 - Folder names with characters outside the Windows system code page may not work.
 
 ## Problems and ideas

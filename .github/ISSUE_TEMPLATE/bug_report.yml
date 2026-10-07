@@ -20,8 +20,8 @@ body:
     id: version
     attributes:
       label: Version
-      description: Shown at the top of the window, for example "v1.0.0"; the log shows the build number.
-      placeholder: 1.0.0 build 44
+      description: Shown at the top of the window, for example "v1.0.12"; the log shows the build number.
+      placeholder: 1.0.12 build 65
     validations:
       required: true
   - type: dropdown
