@@ -19,6 +19,10 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.3.12: the preview also restarts by itself when the video keeps running too slowly, without restarting the radio. The station position (optional, when it is enabled in the settings file) needs only latitude, longitude and height above sea level, for example from a phone. The GPS tile of the telemetry shows whether the position is valid, weak or missing (**NO FIX**, with the last valid position and its age) and tells a silent GPS module apart from a lost radio link, and **GPS INTERFERENCE** shows more raw readings from the GPS module. MX Uploader has no changes and stays at 1.0.2.
+
+Also new since 1.0.12 (1.1.x to 1.3.11 were not released separately): the video preview uses the built-in VLC (folder `vlc`, an installed VLC is not needed), with sound, and restarts by itself when the picture freezes. Clearer status: lamps for each stage, SNR with the level needed for the current MODCOD, UTC clock and an input level bar. Steadier long runs and faster recovery after a fade or a radio or USB problem. Optional reception of files, SSDV pictures with fountain coding and GPS telemetry from SkyEdge transmitters, and optional sending of the station position to the MX merger (both off by default; the position is not shown publicly). Small fixes.
+
 New in 1.0.12: better HackRF reception and clearer status. HackRF reception quality is better (higher MER, fewer errors) when the sample rate leaves enough room; if the symbol rate is too wide for the chosen sample rate, the window says which sample rate to use. HackRF has an optional automatic gain (**Auto gain**, off by default) with a status line that shows what it is doing; it stays on when you switch the RF amp by hand. When the transmitter sends only filler (no video, no images), the window shows this instead of "waiting for video...". The constellation shows all points correctly in more situations, automatic restarts happen less often when the receiver stays locked but cannot decode for a long time, and Upload to MX server now also skips padding packets. 1.0.10 and 1.0.11 were not released separately. MX Uploader has no changes and stays at 1.0.2.
 
 New in 1.0.9: steadier reception near the decoding limit. Near the decoding threshold the receiver could stay locked without decoding anything until it was restarted; it now recovers by itself within a fraction of a second. More data is decoded from a weak signal, and the MER is higher with a strong one. When the signal is lost, the constellation fades out and shows NO SIGNAL, and the readouts show -- instead of the last value. 1.0.8 was not released separately. MX Uploader has no changes and stays at 1.0.2.
@@ -46,17 +50,17 @@ New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.
 - Windows 10, 64-bit (tested on three PCs). Windows 11 should work but has not been tested.
 - An RTL-SDR dongle or a HackRF One with the **WinUSB** driver. Install it once with
   [Zadig](https://zadig.akeo.ie): pick the device, choose *WinUSB*, click *Install Driver*.
-- Optional: [VLC media player](https://www.videolan.org/vlc/) 64-bit in its default folder.
-  The video preview uses it; without VLC the preview uses ffmpeg instead.
+- VLC does not need to be installed: the video preview uses the VLC engine in the folder `vlc` of the ZIP.
+  Keep that folder next to `leandvb_gui.exe`.
 
 **Install**
 
-1. Extract **all** files from the ZIP into one folder where you can write, for example on the Desktop.
+1. Extract **all** files from the ZIP, with the `vlc` folder, into one folder where you can write, for example on the Desktop.
    Not into `C:\Program Files`: the programs save their settings next to the exe.
 2. Run `leandvb_gui.exe` (the receiver), or `mx_uploader.exe` from the MX Uploader ZIP.
 3. The programs are not signed, so Windows may show *"Windows protected your PC"*:
    click *More info*, then *Run anyway*.
-4. On a slow PC the very first start can take up to half a minute (VLC builds its plugin list). Later starts are fast.
+4. On a slow PC the first start of the video preview can take a while, because VLC loads its plugins. Later starts are faster.
 
 ## How it fits together
 
@@ -77,7 +81,7 @@ flowchart LR
 
 | | What it is | What to do |
 |---|---|---|
-| **1** | **Source / SDR** | Choose RTL-SDR or HackRF, type the frequency in MHz (default 437.000), set the gain. Or choose *IQ file* to decode a recording. |
+| **1** | **Source / SDR** | Choose RTL-SDR or HackRF, type the frequency in MHz (default 437.000), set the gain. Or choose *IQ file* to decode a recording. Other radios marked *(exp.)* may also appear in the list: they are experimental and have not been tested. |
 | **2** | **Signal** | DVB-S2, the MODCOD of the transmitter (default QPSK 3/4), symbol rate (default 500000). *Lock (weak)* with *Follow TX changes* is the default, see below. |
 | **3** | **Output** | What to do with the stream, in any combination: preview, VLC, TS recording, SSDV photos, upload to MX. |
 | **4** | **Constellation** | Four clean dots = a good QPSK signal. A round cloud = too weak. |
@@ -159,12 +163,11 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.0.12
+## Known limitations in 1.3.12
 
-- In AUTO mode a very weak transmission with a low MODCOD (QPSK 1/4 to 1/2) may be treated as noise. The SkyEdge transmitter uses higher MODCODs and is not affected.
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
-- HackRF: the better reception was tested only with narrow signals (low symbol rates); with wider signals and the suggested higher sample rate it has not been tested yet.
+- **GPS INTERFERENCE** shows the raw state reported by the u-blox GPS module of the transmitter: "critical" can appear without jamming when the GPS antenna is blocked or indoors. An own assessment is planned for the next version.
 - Folder names with characters outside the Windows system code page may not work.
 
 ## Problems and ideas
