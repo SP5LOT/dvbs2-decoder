@@ -19,6 +19,8 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.3.14: **GPS INTERFERENCE** can show our own assessment of the GPS state of the transmitter (optional, off by default; enabled in the settings file together with reference values measured for its GPS module): OK, DEGRADED (weaker signal), BLOCKED (antenna blocked or attenuated), CW (interference), RF GAIN (suspected RF fault), UNCERTAIN and **SPOOFING** (suspected), with the reason and the measured values. The raw state of the u-blox module is still shown, small and grey. SPOOFING suspected is a heuristic, tested only with our own GPS test signal; when the transmitter is in the Asia-Pacific region, it can appear without any spoofing. 1.3.13 was not released separately. MX Uploader has no changes and stays at 1.0.2.
+
 New in 1.3.12: the preview also restarts by itself when the video keeps running too slowly, without restarting the radio. The station position (optional, when it is enabled in the settings file) needs only latitude, longitude and height above sea level, for example from a phone. The GPS tile of the telemetry shows whether the position is valid, weak or missing (**NO FIX**, with the last valid position and its age) and tells a silent GPS module apart from a lost radio link, and **GPS INTERFERENCE** shows more raw readings from the GPS module. MX Uploader has no changes and stays at 1.0.2.
 
 Also new since 1.0.12 (1.1.x to 1.3.11 were not released separately): the video preview uses the built-in VLC (folder `vlc`, an installed VLC is not needed), with sound, and restarts by itself when the picture freezes. Clearer status: lamps for each stage, SNR with the level needed for the current MODCOD, UTC clock and an input level bar. Steadier long runs and faster recovery after a fade or a radio or USB problem. Optional reception of files, SSDV pictures with fountain coding and GPS telemetry from SkyEdge transmitters, and optional sending of the station position to the MX merger (both off by default; the position is not shown publicly). Small fixes.
@@ -163,11 +165,11 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.3.12
+## Known limitations in 1.3.14
 
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
-- **GPS INTERFERENCE** shows the raw state reported by the u-blox GPS module of the transmitter: "critical" can appear without jamming when the GPS antenna is blocked or indoors. An own assessment is planned for the next version.
+- Without the optional assessment, **GPS INTERFERENCE** shows the raw state reported by the u-blox GPS module of the transmitter: "critical" can appear without jamming when the GPS antenna is blocked or indoors. The assessment needs new reference values after the GPS module or its antenna is moved or replaced.
 - Folder names with characters outside the Windows system code page may not work.
 
 ## Problems and ideas
