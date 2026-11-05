@@ -19,6 +19,8 @@ author: please report problems here, not upstream.
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
+New in 1.3.27: **GPS INTERFERENCE** is shorter (state and spoofing flag, details in the tooltip), so the window has room for all panels; a **Standard / HAB mode** switch at the top of the window. *Standard* (the default) is plain DATV video reception, for example QO-100 (with an LNB, enter the IF in the frequency field; its tooltip shows how). *HAB mode* also receives SSDV images, files and GPS telemetry from high-altitude balloon transmitters. The switch works during reception (short restart) and is remembered. The list of received files shows only the files of the current run (the files on the disk are kept). RTL-SDR: **Auto gain** (the tuner AGC) can be ticked in the window, off by default. The SSDV picture stays in the window when the signal fades and the receiver restarts, and in full screen it shows its real size. When an RTL-SDR dongle is lost during reception, the receiver restarts the radio by itself instead of closing. The speed bar shows the data rate of the SSDV images, and there are optional engine settings for weak signals (off by default, enabled in the settings file). 1.3.15 to 1.3.26 were not released separately. MX Uploader has no changes and stays at 1.0.2.
+
 New in 1.3.14: **GPS INTERFERENCE** can show our own assessment of the GPS state of the transmitter (optional, off by default; enabled in the settings file together with reference values measured for its GPS module): OK, DEGRADED (weaker signal), BLOCKED (antenna blocked or attenuated), CW (interference), RF GAIN (suspected RF fault), UNCERTAIN and **SPOOFING** (suspected), with the reason and the measured values. The raw state of the u-blox module is still shown, small and grey. SPOOFING suspected is a heuristic, tested only with our own GPS test signal; when the transmitter is in the Asia-Pacific region, it can appear without any spoofing. 1.3.13 was not released separately. MX Uploader has no changes and stays at 1.0.2.
 
 New in 1.3.12: the preview also restarts by itself when the video keeps running too slowly, without restarting the radio. The station position (optional, when it is enabled in the settings file) needs only latitude, longitude and height above sea level, for example from a phone. The GPS tile of the telemetry shows whether the position is valid, weak or missing (**NO FIX**, with the last valid position and its age) and tells a silent GPS module apart from a lost radio link, and **GPS INTERFERENCE** shows more raw readings from the GPS module. MX Uploader has no changes and stays at 1.0.2.
@@ -92,6 +94,8 @@ flowchart LR
 | **7** | **Received image (SSDV)** | The photo being received now and the list of photos received since the start. Double-click a thumbnail to open it. |
 | **8** | **Status** | **LOCK**: *FRAME* (green) means data is decoded, *CARRIER* means the signal is found but not decoded yet. **MER**: signal quality in dB, more is better (for QPSK 3/4 the DVB-S2 standard gives about 4 dB). **SS**: signal strength. **FREQ**: carrier offset. **VBER**: bit errors, 0 is clean. |
 
+**Standard / HAB mode.** The switch at the top of the window, next to the program name: *Standard* (default) is plain DATV video; *HAB mode* adds SSDV photos, files and GPS telemetry from balloon transmitters (panels **7** and the telemetry tiles). It can be switched during reception; the reception restarts for a moment.
+
 **Modcod mode.** A transmitter usually keeps one MODCOD (a balloon for the whole flight), so the receiver decodes only the
 selected one (*Lock*). If the transmitter uses another MODCOD, *Follow TX changes* switches the receiver
 to it by itself within a few seconds (short restart), and the choice is remembered. *AUTO* accepts every
@@ -102,7 +106,8 @@ MODCOD at once, for transmitters that change it often.
 1. Plug in the SDR and start `leandvb_gui.exe`.
 2. **1**: choose the SDR and type the frequency of the transmitter.
 3. **2**: check the symbol rate (ask the operator of the transmitter, for example 500000 or 250000).
-4. Press **START**. After a few seconds LOCK shows *FRAME*, the video appears and photos start to arrive.
+4. For a balloon transmitter with SSDV photos, switch the top of the window to **HAB mode**.
+5. Press **START**. After a few seconds LOCK shows *FRAME*, the video appears and (in HAB mode) photos start to arrive.
 
 ## Outputs
 
@@ -110,7 +115,7 @@ MODCOD at once, for transmitters that change it often.
 - **Stream to VLC (UDP)**: the full transport stream to an address and port, default `127.0.0.1:1234`.
   In VLC: *Media > Open Network Stream* > `udp://@:1234`. It can also go to another PC.
 - **Record TS (all PIDs)**: a new file `rec_<date>.ts` at every start, never overwritten. Folder: *Videos\SkyEdge DVB*.
-- **Receive files (SSDV)**: photos sent by the transmitter, saved as `rx_NNNN.jpg`. Folder: *Pictures\SkyEdge DVB\SSDV*.
+- **Receive files (SSDV)**, HAB mode only: photos sent by the transmitter, saved as `rx_NNNN.jpg`. Folder: *Pictures\SkyEdge DVB\SSDV*.
   The *...* button chooses another folder.
 - **Upload to MX server (tsmerge)**: tick it and enter your station **callsign** and **key**. Both are empty after
   installation; the operator of the MX merger gives them to you. The status line shows when the server has accepted your station.
@@ -165,7 +170,7 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.3.14
+## Known limitations in 1.3.27
 
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
