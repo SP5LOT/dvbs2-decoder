@@ -15,31 +15,21 @@ author: please report problems here, not upstream.
 
 ![Receiver window](docs/images/receiver.png)
 
+## What it does
+
+- Receives **DVB-S2** (QPSK, 8PSK, 16APSK, 32APSK) from an **RTL-SDR** or a **HackRF One**, or decodes a recorded IQ file.
+- Shows the **live video** with sound (built-in VLC engine). The preview restarts by itself when the picture freezes.
+- **Standard / HAB mode** switch: *Standard* is plain DATV video reception (for example QO-100, with an LNB enter the IF), *HAB mode* also receives what a balloon transmitter sends next to the video: **SSDV photos** (with RaptorQ repair packets), **files** (RaptorQ fountain code, checked with SHA-256) and **GPS telemetry** with sensors and the GPS interference state, see [Files and photos from a balloon transmitter](#files-and-photos-from-a-balloon-transmitter-hab-mode).
+- Clear status: a lamp for each stage, constellation, spectrum, SNR with the level needed for the current MODCOD, MER and CNR bars, bit rate of the stream, UTC clock and input level.
+- Outputs in any combination: preview, stream to VLC over UDP, TS recording, and **upload to the SkyEdge MX merger**, which combines the reception of many ground stations (optionally with the station position, which is not shown publicly).
+- Steady long runs: it follows a change of MODCOD by the transmitter, recovers by itself after a fade or a radio or USB problem, and has an optional automatic gain for HackRF and RTL-SDR.
+- Runs on modest PCs: the demodulator comes in two builds, with and without AVX2, and the receiver picks the right one.
+
 ## Download
 
 Get the ZIP from **[Releases](../../releases/latest)**. There is no installer: everything is in one folder.
 
-New in 1.3.27: **GPS INTERFERENCE** is shorter (state and spoofing flag, details in the tooltip), so the window has room for all panels; a **Standard / HAB mode** switch at the top of the window. *Standard* (the default) is plain DATV video reception, for example QO-100 (with an LNB, enter the IF in the frequency field; its tooltip shows how). *HAB mode* also receives SSDV images, files and GPS telemetry from high-altitude balloon transmitters. The switch works during reception (short restart) and is remembered. The list of received files shows only the files of the current run (the files on the disk are kept). RTL-SDR: **Auto gain** (the tuner AGC) can be ticked in the window, off by default. The SSDV picture stays in the window when the signal fades and the receiver restarts, and in full screen it shows its real size. When an RTL-SDR dongle is lost during reception, the receiver restarts the radio by itself instead of closing. The speed bar shows the data rate of the SSDV images, and there are optional engine settings for weak signals (off by default, enabled in the settings file). 1.3.15 to 1.3.26 were not released separately. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.3.14: **GPS INTERFERENCE** can show our own assessment of the GPS state of the transmitter (optional, off by default; enabled in the settings file together with reference values measured for its GPS module): OK, DEGRADED (weaker signal), BLOCKED (antenna blocked or attenuated), CW (interference), RF GAIN (suspected RF fault), UNCERTAIN and **SPOOFING** (suspected), with the reason and the measured values. The raw state of the u-blox module is still shown, small and grey. SPOOFING suspected is a heuristic, tested only with our own GPS test signal; when the transmitter is in the Asia-Pacific region, it can appear without any spoofing. 1.3.13 was not released separately. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.3.12: the preview also restarts by itself when the video keeps running too slowly, without restarting the radio. The station position (optional, when it is enabled in the settings file) needs only latitude, longitude and height above sea level, for example from a phone. The GPS tile of the telemetry shows whether the position is valid, weak or missing (**NO FIX**, with the last valid position and its age) and tells a silent GPS module apart from a lost radio link, and **GPS INTERFERENCE** shows more raw readings from the GPS module. MX Uploader has no changes and stays at 1.0.2.
-
-Also new since 1.0.12 (1.1.x to 1.3.11 were not released separately): the video preview uses the built-in VLC (folder `vlc`, an installed VLC is not needed), with sound, and restarts by itself when the picture freezes. Clearer status: lamps for each stage, SNR with the level needed for the current MODCOD, UTC clock and an input level bar. Steadier long runs and faster recovery after a fade or a radio or USB problem. Optional reception of files, SSDV pictures with fountain coding and GPS telemetry from SkyEdge transmitters, and optional sending of the station position to the MX merger (both off by default; the position is not shown publicly). Small fixes.
-
-New in 1.0.12: better HackRF reception and clearer status. HackRF reception quality is better (higher MER, fewer errors) when the sample rate leaves enough room; if the symbol rate is too wide for the chosen sample rate, the window says which sample rate to use. HackRF has an optional automatic gain (**Auto gain**, off by default) with a status line that shows what it is doing; it stays on when you switch the RF amp by hand. When the transmitter sends only filler (no video, no images), the window shows this instead of "waiting for video...". The constellation shows all points correctly in more situations, automatic restarts happen less often when the receiver stays locked but cannot decode for a long time, and Upload to MX server now also skips padding packets. 1.0.10 and 1.0.11 were not released separately. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.0.9: steadier reception near the decoding limit. Near the decoding threshold the receiver could stay locked without decoding anything until it was restarted; it now recovers by itself within a fraction of a second. More data is decoded from a weak signal, and the MER is higher with a strong one. When the signal is lost, the constellation fades out and shows NO SIGNAL, and the readouts show -- instead of the last value. 1.0.8 was not released separately. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.0.7: two bars above the panels show **MER** and **CNR** in dB (the bar is the average of the last 2 seconds, the thin line is the latest reading; CNR is shown when the sample rate is more than 4 times the symbol rate), and **Speed** and **Data** show the bit rate of the decoded transport stream and how much of it has been received since START. MER readings are steadier, plus small fixes. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.0.6: 16APSK and 32APSK with short frames now decode properly (before, only a small part of the stream was decoded), and APSK reception is tuned for common amateur DVB-S2 transmitters such as Pluto and Portsdown (for a transmitter that follows the EN 302 307 amplitude scaling exactly, set `apsk_std=1` in the `[signal]` section of `leandvb_gui_settings.ini`). If the receiver stays locked but cannot decode anything for 20 seconds, it restarts the demodulator by itself, and the log warns when the signal at the SDR input is too weak or clipped. MX Uploader has no changes and stays at 1.0.2.
-
-New in 1.0.4: faster decoder, more data from a weak signal. The LDPC decoder now runs inside the demodulator: with a weak signal the receiver decodes more and keeps up with the live signal better. There are two builds of the demodulator, with and without AVX2, and the receiver picks the right one for your processor. Symbol rate, roll-off, frequency and sample rate are now remembered between runs. MX Uploader has no changes and stays at 1.0.2.
-
-Also in 1.0.4 (from 1.0.3, which was not released separately): steadier HackRF reception on slower PCs. With a HackRF on a slower PC, a short moment of high CPU load could leave the 1.0.2 receiver behind the live signal for good: the video kept stuttering until the program was restarted. Now the receiver catches up with the live signal by itself and notes this in the log.
-
-New in 1.0.2: better reception of a weak or noisy signal. With a weak signal, 1.0.1 could show FRAMELOCK and a good MER and still produce no video until the signal faded away; 1.0.2 recovers from this by itself and decodes noticeably more from weak flight recordings. With a good signal nothing changes, and the window is the same as in 1.0.1.
+What changed in each version is listed in the notes of each **[release](../../releases)**.
 
 | File in the release | For whom |
 |---|---|
@@ -132,7 +122,7 @@ A plain DATV transmitter does not send these streams; then the tiles show *waiti
 
 ## Decoding a recorded IQ file
 
-New in 1.0.1: the receiver can decode a recording instead of a live SDR, for example a file saved by
+The receiver can decode a recording instead of a live SDR, for example a file saved by
 SatDump, rtl_sdr or a HackRF.
 
 1. **1** *Source / SDR*, *Type*: choose **IQ file** and pick the file with the **...** button.
@@ -180,11 +170,13 @@ Several receivers at once: one copy per receiver, each with its own settings fil
 - All files from the ZIP must stay in the same folder. When you update to a new version, copy
   `leandvb_gui_settings.ini` (and `mx_uploader.ini`) into the new folder to keep your settings.
 
-## Known limitations in 1.3.27
+## Known limitations
 
 - The bundled RTL-SDR library has no support for the **RTL-SDR Blog V4** (not tested with a V4).
 - HackRF: in rare cases the USB stream stops; restart the program.
 - Without the optional assessment, **GPS INTERFERENCE** shows the raw state reported by the u-blox GPS module of the transmitter: "critical" can appear without jamming when the GPS antenna is blocked or indoors. The assessment needs new reference values after the GPS module or its antenna is moved or replaced.
+- **SPOOFING** suspected (optional GPS assessment) is a heuristic, tested only with our own GPS test signal; when the transmitter is in the Asia-Pacific region, it can appear without any spoofing.
+- APSK reception is tuned for common amateur transmitters such as Pluto and Portsdown; for a transmitter that follows the EN 302 307 amplitude scaling exactly, set `apsk_std=1` in the `[signal]` section of `leandvb_gui_settings.ini`.
 - Folder names with characters outside the Windows system code page may not work.
 
 ## Problems and ideas
