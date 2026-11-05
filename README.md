@@ -120,6 +120,16 @@ MODCOD at once, for transmitters that change it often.
 - **Upload to MX server (tsmerge)**: tick it and enter your station **callsign** and **key**. Both are empty after
   installation; the operator of the MX merger gives them to you. The status line shows when the server has accepted your station.
 
+## Files and photos from a balloon transmitter (HAB mode)
+
+In HAB mode the receiver also takes the data that a SkyEdge balloon transmitter sends next to the video. The tiles on the right of the window show it:
+
+- **Files.** The transmitter can send any file, for example a full-size photo or a log. It is sent with a RaptorQ fountain code: the receiver does not need every packet, only enough of them, so a file still arrives complete when some packets are lost in a fade. **FILES** shows how many files are complete, the file being received now with a progress bar, and the last one. Every file is checked against its SHA-256 sum before it is saved; `sha_bad` counts parts that failed the check (a file that fails is not saved). Files are saved in the subfolder `pliki` of the SSDV folder, with the name given by the transmitter. **RECEIVED FILES** lists the files of this run, newest first; double-click a name to show it in its folder.
+- **SSDV photos with repair packets.** The transmitter can add RaptorQ repair packets to the SSDV photos. When some photo packets are lost, the receiver rebuilds them from the repair packets, so more photos come out complete. **SSDV FOUNTAIN** shows how many packets were rebuilt (*rebuilt*) and how many repair attempts worked (*decodes ok*) or not (*fail*).
+- **GPS**, **SENSORS** and **GPS INTERFERENCE**: the position and telemetry of the transmitter, when it sends them.
+
+A plain DATV transmitter does not send these streams; then the tiles show *waiting*.
+
 ## Decoding a recorded IQ file
 
 New in 1.0.1: the receiver can decode a recording instead of a live SDR, for example a file saved by
